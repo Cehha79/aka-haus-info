@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AKA Haus · Organisation und Kommunikation im Pflegeheim · MikaTec</title>
+<link rel="stylesheet" href="style.css?v=249">
+<link rel="icon" type="image/png" href="logos/mikatec-mt-favicon.png">
+<link rel="canonical" href="https://mika-tec.com/aka-haus.html">
+<meta name="description" content="AKA Haus ist eine App für Organisation und Kommunikation im Pflegeheim: Betreuung, Schreiben an Ärzte, Protokolle, Haustechnik, Aufgaben und Miteinander. Eigenständig neben jeder Pflegesoftware, läuft nur im Hausnetz. In Entwicklung, Vorführung auf Anfrage.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AKA Haus · Organisation und Kommunikation im Pflegeheim">
+<meta property="og:description" content="Alles, was im Heim neben der Pflegedokumentation anfällt, an einem Ort. Der Server steht im Haus, die Daten bleiben dort.">
+<meta property="og:image" content="https://mika-tec.com/bilder/01-ueberblick-hell.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script>/* Theme sofort setzen, bevor die Seite malt (kein Aufblitzen); Langfassung in theme.js */
+(function(){try{if(window.self!==window.top)document.documentElement.classList.add('embed')}catch(e){document.documentElement.classList.add('embed')}
+var h=location.hash||'',s=null;try{s=sessionStorage.getItem('mt-theme')}catch(e){}
+if(h.indexOf('mt=dark')!==-1||(h.indexOf('mt=light')===-1&&s==='dark'))document.documentElement.setAttribute('data-theme','dark');})();</script>
+<script src="theme.js?v=249" defer></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://mika-tec.com/aka-haus.html#webpage",
+      "url": "https://mika-tec.com/aka-haus.html",
+      "name": "AKA Haus · Organisation und Kommunikation im Pflegeheim · MikaTec",
+      "description": "AKA Haus ist eine App für Organisation und Kommunikation im Pflegeheim, eigenständig neben jeder Pflegesoftware, nur im Hausnetz.",
+      "inLanguage": "de-DE",
+      "isPartOf": {
+        "@id": "https://mika-tec.com/#website"
+      },
+      "about": {
+        "@id": "https://mika-tec.com/aka-haus.html#software"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Start",
+          "item": "https://mika-tec.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Projekte",
+          "item": "https://mika-tec.com/projekte.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "AKA Haus",
+          "item": "https://mika-tec.com/aka-haus.html"
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://mika-tec.com/aka-haus.html#software",
+      "name": "AKA Haus",
+      "description": "App für Organisation und Kommunikation im Pflegeheim, eigenständig neben jeder Pflegesoftware. Der Server steht im Heim, die Daten bleiben im Hausnetz. In Entwicklung.",
+      "url": "https://mika-tec.com/aka-haus.html",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Browser, iPadOS",
+      "inLanguage": "de-DE",
+      "screenshot": "https://mika-tec.com/bilder/01-ueberblick-hell.jpg",
+      "publisher": {
+        "@type": "Organization",
+        "name": "MikaTec",
+        "url": "https://mika-tec.com/"
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4v2h6V4M9 11h6M9 15h6"/></symbol>
+  <symbol id="i-tool" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5.3 5.3L4 17v3h3l5.2-5.2a4 4 0 0 0 5.3-5.3l-2.5 2.5-2.5-.5-.5-2.5 2.5-2.5z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 6.5A1.5 1.5 0 0 1 5.5 5h13A1.5 1.5 0 0 1 20 6.5v9a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 3.5V17A1.5 1.5 0 0 1 4 15.5v-9z"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l2.5 2.5M14 9l2 2"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5M12 14.5v2.5"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6V3z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16M13 5l7 7-7 7"/></symbol>
+</svg>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="https://mika-tec.com/index.html"><img class="mark" src="logos/mikatec-mt.png" alt="MikaTec-Logo"><span class="name">Mika<b>Tec</b></span></a>
+    <nav class="nav-links">
+      <a href="https://mika-tec.com/index.html" class="start-link">Start</a>
+      <a href="https://mika-tec.com/leistungen.html">Leistungen</a>
+      <a href="https://mika-tec.com/projekte.html" class="active">Projekte</a>
+      <a href="https://mika-tec.com/ueber.html">Über MikaTec</a>
+      <span class="nav-break" aria-hidden="true"></span><a href="https://mika-tec.com/kontakt.html" class="nav-cta">Anfragen</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="page wrap">
+    <div class="page-head page-hero">
+      <span class="sec-kicker">AKA Haus</span>
+      <h1>Organisation und Kommunikation im Pflegeheim</h1>
+      <p>Ihre Pflegesoftware dokumentiert die Pflege. AKA Haus übernimmt, was daneben anfällt:
+      Betreuung, Schreiben an Ärzte, Protokolle, Haustechnik, Aufgaben und das Miteinander im Haus.
+      Der Server steht bei Ihnen, die Daten verlassen das Haus nicht.</p>
+      <div class="cta-row" style="margin-top:22px">
+        <a href="https://mika-tec.com/kontakt.html" class="btn btn-primary">Vorführung anfragen <svg class="ic"><use href="#i-arrow"/></svg></a>
+        <a href="mailto:info@mika-tec.com?subject=AKA%20Haus" class="btn btn-ghost">info@mika-tec.com</a>
+      </div>
+      <p style="margin-top:14px;font-size:.92rem">In Entwicklung · arbeitet bisher mit Übungsdaten · kein Herunterladen, Vorführung auf Anfrage</p>
+    </div>
+
+    <div style="margin-top:28px">
+      <div class="page-head">
+        <span class="sec-kicker">Einblick</span>
+        <h2>So sieht es aus</h2>
+        <p>Alle Bilder zeigen die Übungsversion. Haus, Bewohner und Vorgänge sind erfunden.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:16px">
+        <div class="shot"><div class="bar"><i></i><i></i><i></i><span class="t">Überblick</span></div><img src="bilder/01-ueberblick-hell.jpg" alt="AKA Haus: Startseite mit Übergabe, Aufgaben, Kalender, Betreuung und Schreiben an Ärzte" width="1600" height="1000" loading="lazy"></div>
+        <div class="shot"><div class="bar"><i></i><i></i><i></i><span class="t">Betreuung</span></div><img src="bilder/02-betreuung-hell.jpg" alt="AKA Haus: Angebote der Betreuung nach Art, Dauer und Eignung" width="1600" height="1000" loading="lazy"></div>
+        <div class="shot"><div class="bar"><i></i><i></i><i></i><span class="t">Schreiben an Ärzte</span></div><img src="bilder/03-schreiben-hell.jpg" alt="AKA Haus: offene und verschickte Schreiben an Arztpraxen" width="1600" height="1000" loading="lazy"></div>
+        <div class="shot"><div class="bar"><i></i><i></i><i></i><span class="t">Ess-Karten</span></div><img src="bilder/04-ess-karten-hell.jpg" alt="AKA Haus: Tischkarten je Bewohner und Mahlzeit" width="1600" height="1000" loading="lazy"></div>
+        <div class="shot"><div class="bar"><i></i><i></i><i></i><span class="t">Rollen und Rechte</span></div><img src="bilder/05-rechte-hell.jpg" alt="AKA Haus: Rechte je Funktion als Tabelle" width="1600" height="1000" loading="lazy"></div>
+        <div class="shot"><div class="bar"><i></i><i></i><i></i><span class="t">Auswertung</span></div><img src="bilder/06-auswertung-hell.jpg" alt="AKA Haus: Kennzahlen und Diagramme über alle Vorgänge" width="1600" height="1000" loading="lazy"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:64px">
+      <div class="page-head">
+        <span class="sec-kicker">Funktionen</span>
+        <h2>Was AKA Haus abdeckt</h2>
+        <p>Vieles im Heim läuft heute auf Papier, über Zettel im Dienstzimmer oder gar nicht. Diese Bereiche bringt AKA Haus an einen Ort.</p>
+      </div>
+      <div class="bento">
+        <div class="card b-7">
+          <div class="ico"><svg class="ic"><use href="#i-heart"/></svg></div>
+          <h2>Betreuung</h2>
+          <p>Der Kernbereich. Planen, durchführen und nachweisen, für die Betreuungskräfte nach § 43b SGB XI.</p>
+          <ul>
+            <li>Wochenplan mit festen Zeiten je Wohnbereich</li>
+            <li>Angebote nach Art, Dauer und Eignung, auch für Einzelbetreuung und am Bett</li>
+            <li>Spiele, Übungen und Ideen des Monats</li>
+            <li>Vorlagen zum Ansehen und Drucken, vom Biografiebogen bis zur Teilnahmeliste</li>
+            <li>Übersicht, wer länger kein Angebot erreicht hat</li>
+          </ul>
+        </div>
+
+        <div class="card b-5">
+          <div class="ico"><svg class="ic"><use href="#i-mail"/></svg></div>
+          <h2>Schreiben an Ärzte</h2>
+          <p>Rezepte, Hilfsmittel und Rückfragen, ohne dass etwas liegen bleibt.</p>
+          <ul>
+            <li>Rezept bestellen, Hilfsmittel verordnen, Frage an die Praxis</li>
+            <li>Nachverfolgung: noch offen, verschickt, erledigt</li>
+            <li>Verschickte Schreiben werden festgeschrieben</li>
+            <li>Ausgabe als PDF</li>
+          </ul>
+        </div>
+
+        <div class="card b-5">
+          <div class="ico"><svg class="ic"><use href="#i-list"/></svg></div>
+          <h2>Protokolle und Nachweise</h2>
+          <p>Einmal eingetragen, bleibt ein Eintrag unverändert stehen, mit Name und Uhrzeit.</p>
+          <ul>
+            <li>Kühlschrank-Temperaturen mit Monatsliste</li>
+            <li>Schlüsselübergabe</li>
+            <li>Prüfungen, Wartung und Schulungen mit Erinnerung</li>
+          </ul>
+        </div>
+
+        <div class="card b-7">
+          <div class="ico"><svg class="ic"><use href="#i-chat"/></svg></div>
+          <h2>Miteinander im Haus</h2>
+          <p>Was die nächste Schicht wissen muss und was alle betrifft, steht dort, wo es jeder findet.</p>
+          <ul>
+            <li>Übergabe je Wohnbereich und Schicht, als organisatorische Ergänzung zur Pflegedokumentation</li>
+            <li>Aufgaben, einmalig oder wiederkehrend, mit Protokoll</li>
+            <li>Chat für Bereiche und das ganze Haus</li>
+            <li>Kalender, Schwarzes Brett mit Umfragen, Telefonbuch mit Notfallnummern</li>
+            <li>Ess-Karten: eine Tischkarte je Bewohner und Mahlzeit</li>
+          </ul>
+        </div>
+
+        <div class="card b-7">
+          <div class="ico"><svg class="ic"><use href="#i-tool"/></svg></div>
+          <h2>Haustechnik und Qualität</h2>
+          <p>Vom tropfenden Wasserhahn bis zum QM-Dokument hat jede Meldung ihren Platz.</p>
+          <ul>
+            <li>Defekte melden und den Stand verfolgen</li>
+            <li>Schlüssel und Geräte, Fundgrube</li>
+            <li>QM-Dokumente, Formulare, Beschwerden und Ideen</li>
+          </ul>
+        </div>
+
+        <div class="card b-5">
+          <div class="ico"><svg class="ic"><use href="#i-key"/></svg></div>
+          <h2>Rollen, Rechte, Auswertung</h2>
+          <p>Jede Person sieht, was zu ihrer Aufgabe gehört.</p>
+          <ul>
+            <li>Rechte nach Bereich, Funktion und Dienst</li>
+            <li>Sammelkonten je Wohnbereich und persönliche Konten</li>
+            <li>Kennzahlen und Suche über alle Vorgänge</li>
+            <li>Jedes Haus kann einzelne Bereiche abschalten</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:64px">
+      <div class="page-head">
+        <span class="sec-kicker">Ablauf</span>
+        <h2>So lernen Sie AKA Haus kennen</h2>
+        <p>AKA Haus gibt es nicht zum Herunterladen. Der Weg führt über ein Gespräch.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="num">1</div><h3>Anfragen</h3><p>Schreiben Sie kurz, um welches Haus es geht und was Ihnen im Alltag am meisten fehlt.</p></div>
+        <div class="step"><div class="num">2</div><h3>Vorführung</h3><p>Sie sehen die Übungsversion mit erfundenen Daten, am Bildschirm oder vor Ort.</p></div>
+        <div class="step"><div class="num">3</div><h3>Abgleich</h3><p>Gemeinsam klären wir, welche Bereiche Ihr Haus braucht und welche abgeschaltet bleiben.</p></div>
+        <div class="step"><div class="num">4</div><h3>Einrichtung</h3><p>Der Server wird bei Ihnen im Haus aufgestellt. Dieser Schritt folgt, sobald die Entwicklung abgeschlossen ist.</p></div>
+      </div>
+    </div>
+
+    <div style="margin-top:64px">
+      <div class="page-head">
+        <span class="sec-kicker">Sicherheit und Grenzen</span>
+        <h2>Was Sie wissen sollten</h2>
+        <p>Offen gesagt, bevor wir sprechen.</p>
+      </div>
+      <div class="bento">
+        <div class="card b-7">
+          <div class="ico"><svg class="ic"><use href="#i-lock"/></svg></div>
+          <h2>Die Daten bleiben im Haus</h2>
+          <p>Es geht um Gesundheitsdaten. Deshalb gilt: Sicherheit vor Funktion. Nach diesen Grundsätzen wird gebaut.</p>
+          <ul>
+            <li>Ein kleiner eigener Server steht im Heim, es gibt keine Cloud</li>
+            <li>Keine Daten von Bewohnern oder Mitarbeitern gehen an fremde Dienste, auch nicht für Rechtschreibprüfung oder KI</li>
+            <li>Verschlüsselte Verbindung auch im Haus, verschlüsselte Sicherungen</li>
+            <li>Anmeldung und Rechte prüft der Server, nicht nur die Oberfläche</li>
+            <li>Einziger Weg nach außen: Schreiben an Arztpraxen über den Mailserver des Heims, abschaltbar</li>
+          </ul>
+        </div>
+
+        <div class="card b-5">
+          <div class="ico"><svg class="ic"><use href="#i-doc"/></svg></div>
+          <h2>Was AKA Haus nicht ist</h2>
+          <p>Klare Grenzen, damit keine falschen Erwartungen entstehen.</p>
+          <ul>
+            <li>Kein Ersatz für die Pflegesoftware und keine Pflegedokumentation</li>
+            <li>Kein Medizinprodukt: keine Dosierungen, keine Skalen, keine Risikobewertung</li>
+            <li>Noch nicht im Echtbetrieb, bisher nur Übungsdaten</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-group faq-panel" style="margin-top:64px">
+    <details class="faq-section">
+    <summary class="faq-toggle">
+      <span class="sec-kicker">Häufige Fragen</span>
+      <span class="faq-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg></span>
+    </summary>
+    <div class="page-head faq-head">
+      <h2>Gut zu wissen</h2>
+      <p>Die wichtigsten Fragen vorab.</p>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>Ersetzt AKA Haus unsere Pflegesoftware?</summary>
+        <div class="a">Nein. Die Pflegedokumentation bleibt in Ihrer Pflegesoftware. AKA Haus arbeitet daneben und deckt ab, was dort im Alltag meist nicht stattfindet.</div>
+      </details>
+      <details>
+        <summary>Mit welcher Pflegesoftware arbeitet es zusammen?</summary>
+        <div class="a">Mit jeder, weil es eigenständig läuft. AKA Haus braucht keine Schnittstelle zu MediFox, Vivendi, SENSO oder einem anderen Programm. Es tauscht mit der Pflegesoftware keine Daten aus.</div>
+      </details>
+      <details>
+        <summary>Wo liegen die Daten?</summary>
+        <div class="a">Auf einem Server in Ihrem Haus. Es gibt keine Cloud und keinen Zugriff aus dem Internet. Tablets und PCs erreichen den Server nur im Hausnetz.</div>
+      </details>
+      <details>
+        <summary>Welche Geräte brauchen wir?</summary>
+        <div class="a">Einen kleinen Server im Haus und Geräte mit Browser: PCs im Dienstzimmer und iPads auf den Wohnbereichen. Ein eigenes Programm für macOS und Windows ist in Arbeit.</div>
+      </details>
+      <details>
+        <summary>Können wir es schon einsetzen?</summary>
+        <div class="a">Noch nicht. AKA Haus ist in Entwicklung und arbeitet bisher mit Übungsdaten. Eine Vorführung ist jederzeit möglich. Zuerst folgt ein Pilotbetrieb in einem Haus.</div>
+      </details>
+      <details>
+        <summary>Was kostet AKA Haus?</summary>
+        <div class="a">Der Preis steht noch nicht fest und hängt vom Umfang ab. Sie erhalten ihn auf Anfrage.</div>
+      </details>
+      <details>
+        <summary>Müssen wir alle Bereiche nutzen?</summary>
+        <div class="a">Nein. Jedes Haus kann einzelne Bereiche abschalten und mit dem anfangen, was am meisten hilft.</div>
+      </details>
+    </div>
+    </details>
+    </div>
+
+    <div style="margin-top:56px">
+      <div class="contact-box cta-band">
+        <h2>AKA Haus kennenlernen</h2>
+        <p>Eine Vorführung mit der Übungsversion, ohne Verpflichtung. Rückmeldungen aus der Praxis sind ausdrücklich erwünscht.</p>
+        <a href="https://mika-tec.com/kontakt.html" class="btn btn-primary">Vorführung anfragen <svg class="ic"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span class="nav-badge"><span class="dot"></span> Software-Entwicklung &amp; KI/AI Integration</span>
+    <div><a href="https://mika-tec.com/impressum.html">Impressum</a> · <a href="https://mika-tec.com/datenschutz.html">Datenschutz</a> · MikaTec · Hasan Tepegöz</div>
+  </div>
+</footer>
+
+</body>
+</html>
