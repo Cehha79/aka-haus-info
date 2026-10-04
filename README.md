@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="bilder/symbol.svg" width="96" alt="AKA Haus">
+  <img src="bilder/symbol.png" width="96" alt="AKA Haus">
 </p>
 
 <h1 align="center">AKA Haus</h1>
