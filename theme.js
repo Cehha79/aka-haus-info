@@ -1,222 +1,343 @@
-// Wenn diese Seite in einem Modal-iframe steckt: nur Inhalt zeigen (Kopf/Fuß aus)
-try { if (window.self !== window.top) document.documentElement.classList.add('embed'); }
-catch (e) { document.documentElement.classList.add('embed'); }
+(() => {
+  'use strict';
+  const root = document.documentElement;
+  const main = document.getElementById('inhalt');
+  const pageName = document.body.dataset.page;
+  const $ = (selector, scope = document) => scope.querySelector(selector);
+  const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
+  const read = key => { try { return sessionStorage.getItem(key); } catch { return null; } };
+  const save = (key, value) => { try { sessionStorage.setItem(key, value); } catch {} };
+  // Ohne nutzbaren Sitzungsspeicher trägt die Adresse die Farbwahl von Seite zu Seite.
+  const storageWorks = (() => { try { sessionStorage.setItem('mt-test','1'); sessionStorage.removeItem('mt-test'); return true; } catch { return false; } })();
+  const normalize = value => value.toLocaleLowerCase('de').normalize('NFD').replace(/\p{Diacritic}/gu, '').replaceAll('ß','ss');
+  const themeButton = $('.theme-toggle');
+  const menuButton = $('.menu-toggle');
+  const navigation = $('.site-nav');
+  function closeMenu() { navigation.classList.remove('is-open'); menuButton.setAttribute('aria-expanded','false'); }
+  menuButton.addEventListener('click', () => {
+    const open = menuButton.getAttribute('aria-expanded') !== 'true';
+    navigation.classList.toggle('is-open',open);
+    menuButton.setAttribute('aria-expanded',String(open));
+    if(open) $('a',navigation).focus();
+  });
+  document.addEventListener('keydown', event => { if(event.key === 'Escape' && navigation.classList.contains('is-open')) { closeMenu(); menuButton.focus(); } });
+  document.addEventListener('click', event => { if(!event.target.closest('.site-header')) closeMenu(); });
+  matchMedia('(min-width:851px)').addEventListener('change',closeMenu);
+  $('.skip-link').addEventListener('click', event => { event.preventDefault(); main.focus(); });
+  $$('details.faq-section').forEach(section => { section.open = true; });
+  // Für den Druck alle aufklappbaren Themen öffnen und danach den vorherigen Zustand herstellen.
+  window.addEventListener('beforeprint', () => $$('details').forEach(item => { item.dataset.printOpen = String(item.open); item.open = true; }));
+  window.addEventListener('afterprint', () => $$('details[data-print-open]').forEach(item => { item.open = item.dataset.printOpen === 'true'; delete item.dataset.printOpen; }));
 
-// Hell-/Dunkel-Modus für MikaTec: Start ist IMMER Hell. Umschalten auf Dunkel bleibt
-// für die laufende Sitzung erhalten (auch über Seitenwechsel/Neuladen) via sessionStorage;
-// bei einem Neustart (Tab/Browser neu geöffnet) beginnt es wieder hell.
-(function () {
-  var KEY = 'mt-theme';
-  // Im Modal-iframe wird das Thema per URL-Hash mitgegeben (Maske soll zum Elternthema passen)
-  var hash = (location.hash || '');
-  var saved = null;
-  try { saved = sessionStorage.getItem(KEY); } catch (e) {}
-  if (hash.indexOf('mt=dark') !== -1) document.documentElement.setAttribute('data-theme', 'dark');
-  else if (hash.indexOf('mt=light') !== -1) document.documentElement.removeAttribute('data-theme');
-  else if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-  // sonst: nichts setzen → Hellmodus als Start-Standard
+  function themeInUrl() {
+    return new URLSearchParams(location.search).get('mt') || new URLSearchParams(location.hash.slice(1)).get('mt');
+  }
+  // Reihenfolge: Farbwahl aus der Adresse, dann aus dieser Sitzung, dann die Einstellung des Geräts; sonst dunkel.
+  const chosenTheme = [themeInUrl(), read('mt-theme')].find(value => value === 'dark' || value === 'light');
+  const initialTheme = chosenTheme || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  // Alte Farbadressen bleiben gültig; die Reiter behalten ihre eigenen Anker.
+  if (/^#mt=(dark|light)$/.test(location.hash)) {
+    const url = new URL(location.href);
+    url.hash = '';
+    history.replaceState(null,'',url.pathname+url.search);
+  }
+  function themeUrl(url) {
+    if(storageWorks) url.searchParams.delete('mt'); else url.searchParams.set('mt',root.dataset.theme);
+    return url.pathname+url.search+url.hash;
+  }
+  document.addEventListener('click',event => {
+    if(storageWorks) return;
+    const link = event.target.closest('a[href]');
+    if(!link || link.hasAttribute('download') || link.getAttribute('href').startsWith('#')) return;
+    const url = new URL(link.href,location.href);
+    if(url.origin !== location.origin || !/\.html$/.test(url.pathname)) return;
+    url.searchParams.set('mt',root.dataset.theme);
+    link.href = url.pathname+url.search+url.hash;
+  },true);
+  function setTheme(dark) {
+    root.dataset.theme = dark ? 'dark' : 'light';
+    save('mt-theme',root.dataset.theme);
+    history.replaceState(null,'',themeUrl(new URL(location.href)));
+    themeButton.setAttribute('aria-label',dark ? 'Helles Design einschalten' : 'Dunkles Design einschalten');
+    $('use',themeButton).setAttribute('href',dark ? '#ic-sun' : '#ic-moon');
+    $$('img[data-theme-light]').forEach(img => { img.src = dark ? img.dataset.themeDark : img.dataset.themeLight; });
+    document.dispatchEvent(new Event('themechange'));
+  }
+  $$('img[src*="aka-haus/"][src*="-hell.jpg"]').forEach(img => { img.dataset.themeLight = img.getAttribute('src'); img.dataset.themeDark = img.dataset.themeLight.replace('-hell.jpg','-dunkel.jpg'); });
+  setTheme(initialTheme !== 'light');
+  themeButton.addEventListener('click', () => setTheme(root.dataset.theme !== 'dark'));
 
-  var SUN = '<svg class="ic" viewBox="0 0 24 24" width="17" height="17"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
-  var MOON = '<svg class="ic" viewBox="0 0 24 24" width="17" height="17"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
-
-  function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
-  function icon() { return isDark() ? SUN : MOON; }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    var links = document.querySelector('.nav-links');
-    if (!links) return;
-    var btn = document.createElement('button');
-    btn.className = 'theme-toggle';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', 'Hell-/Dunkelmodus umschalten');
-    btn.title = 'Hell / Dunkel';
-    btn.innerHTML = icon();
-    // Interne Seiten-Links tragen das aktuelle Thema in der Adresse mit (#mt=dark),
-    // damit die Wahl über Seitenwechsel hält, auch wenn Safari den Speicher blockiert.
-    function tagLinks() {
-      var dark = isDark();
-      var as = document.getElementsByTagName('a');
-      for (var i = 0; i < as.length; i++) {
-        var href = as[i].getAttribute('href');
-        if (!href) continue;
-        if (/^(mailto:|tel:|https?:\/\/|#)/i.test(href)) continue; // extern/mail/tel/reiner Anker
-        var base = href.replace(/#mt=(light|dark)$/i, '');
-        as[i].setAttribute('href', dark ? base + '#mt=dark' : base);
-      }
+  // Eigenständige Seiten; Unterbereiche wechseln innerhalb der jeweiligen Seite.
+  const tabs = $$('[data-tab]');
+  // Die Sprungmarken in den Bereichen dienen nur dem Betrieb ohne JavaScript; hier übernehmen die Reiter.
+  $$('.tab-anchor').forEach(anchor => anchor.remove());
+  window.addEventListener('load', () => { if(tabs.some(tab => tab.dataset.tab === location.hash.slice(1))) window.scrollTo({top:0,behavior:'instant'}); });
+  const legalSelect = $('[data-legal-select]');
+  function selectTab(focus = false) {
+    const key = location.hash.slice(1);
+    const selected = tabs.find(tab => tab.dataset.tab === key) || tabs[0];
+    if(!selected) return;
+    tabs.forEach(tab => {
+      const active = tab === selected;
+      tab.setAttribute('aria-selected',String(active)); tab.tabIndex = active ? 0 : -1;
+      document.getElementById(tab.getAttribute('aria-controls')).hidden = !active;
+    });
+    if(legalSelect) legalSelect.value = selected.dataset.tab;
+    if(focus) {
+      window.scrollTo({top:0,behavior:'instant'});
+      if(!document.activeElement.matches('[data-tab]')) document.getElementById(selected.getAttribute('aria-controls')).focus({preventScroll:true});
     }
-    function setTheme(dark) {
-      if (dark) document.documentElement.setAttribute('data-theme', 'dark');
-      else document.documentElement.removeAttribute('data-theme');
-      try { sessionStorage.setItem(KEY, dark ? 'dark' : 'light'); } catch (e) {}
-      // aktuelle Adresse merkt die Wahl (überlebt Neuladen, ganz ohne Speicher)
-      try { history.replaceState(null, '', location.pathname + location.search + (dark ? '#mt=dark' : '')); }
-      catch (e) { try { location.hash = dark ? 'mt=dark' : ''; } catch (e2) {} }
-      tagLinks();
-      btn.innerHTML = icon();
-    }
-    btn.addEventListener('click', function () { setTheme(!isDark()); });
-    links.appendChild(btn);
-    tagLinks();
-
-    // Sanfte Einblend-Animation beim Scrollen
-    var targets = document.querySelectorAll('.card, .step, .tl-item, .faq details');
-    if (!('IntersectionObserver' in window) || !targets.length) return;
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-    targets.forEach(function (el, i) {
-      el.classList.add('reveal');
-      el.style.transitionDelay = (i % 3) * 60 + 'ms';
-      io.observe(el);
+  }
+  tabs.forEach((tab,index) => {
+    tab.addEventListener('click', () => { if(location.hash === '#'+tab.dataset.tab) selectTab(); else location.hash = tab.dataset.tab; });
+    tab.addEventListener('keydown', event => {
+      let next;
+      if(event.key === 'ArrowRight') next = (index+1)%tabs.length;
+      if(event.key === 'ArrowLeft') next = (index+tabs.length-1)%tabs.length;
+      if(event.key === 'Home') next = 0;
+      if(event.key === 'End') next = tabs.length-1;
+      if(next !== undefined) { event.preventDefault(); tabs[next].focus(); tabs[next].click(); }
     });
   });
-})();
-
-// Spotlight-Hover: Kartenrahmen leuchtet dezent an der Mausposition (Touch: ohne Wirkung)
-(function () {
-  function init() {
-    var cards = document.querySelectorAll('.card, .pk');
-    if (!cards.length || !window.matchMedia || !matchMedia('(hover: hover)').matches) return;
-    cards.forEach(function (el) {
-      el.classList.add('spot');
-      el.addEventListener('pointermove', function (e) {
-        var r = el.getBoundingClientRect();
-        el.style.setProperty('--spot-x', (e.clientX - r.left) + 'px');
-        el.style.setProperty('--spot-y', (e.clientY - r.top) + 'px');
-        el.style.setProperty('--spot-o', 1);
-      });
-      el.addEventListener('pointerleave', function () { el.style.setProperty('--spot-o', 0); });
+  window.addEventListener('hashchange', () => selectTab(true));
+  selectTab();
+  if(legalSelect) legalSelect.addEventListener('change',() => { location.hash = legalSelect.value; });
+  $$('[data-legal-expand]').forEach(button => {
+    const topics = $$('.legal-topic',button.closest('.legal-panel'));
+    function syncTopics() {
+      const allOpen = topics.every(topic => topic.open);
+      button.setAttribute('aria-expanded',String(allOpen));
+      button.textContent = allOpen ? 'Alle Themen schließen' : 'Alle Themen öffnen';
+    }
+    button.addEventListener('click',() => {
+      const open = !topics.every(topic => topic.open);
+      topics.forEach(topic => { topic.open = open; });
+      syncTopics();
     });
-  }
-  if (document.readyState !== 'loading') init(); else document.addEventListener('DOMContentLoaded', init);
-})();
+    topics.forEach(topic => topic.addEventListener('toggle',syncTopics));
+    syncTopics();
+  });
 
-// Zahlen-Band: Werte zählen beim ersten Sichtbarwerden hoch (dezent, mit Ausklang)
-(function () {
-  function init() {
-    var els = document.querySelectorAll('[data-count]');
-    if (!els.length) return;
-    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var fmt = new Intl.NumberFormat('de-DE');
-    if (reduce || !('IntersectionObserver' in window)) {
-      els.forEach(function (el) { el.textContent = fmt.format(+el.getAttribute('data-count')); });
-      return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (!en.isIntersecting) return;
-        io.unobserve(en.target);
-        var el = en.target, end = +el.getAttribute('data-count'), t0 = performance.now();
-        function step(t) {
-          var p = Math.min((t - t0) / 1100, 1), e = 1 - Math.pow(1 - p, 3);
-          el.textContent = fmt.format(Math.round(end * e));
-          if (p < 1) requestAnimationFrame(step);
-        }
-        requestAnimationFrame(step);
+  // Technikprofil: zwei Ansichten, je Einsatzgebiet ein kompakter Bereich.
+  const toolkit = $('.toolkit');
+  if(toolkit) {
+    const viewButtons = $$('[data-toolkit-view]',toolkit);
+    function selectToolkitView(key) {
+      const selected = viewButtons.find(button => button.dataset.toolkitView === key) || viewButtons[0];
+      viewButtons.forEach(button => {
+        const active = button === selected;
+        button.setAttribute('aria-selected',String(active));
+        button.tabIndex = active ? 0 : -1;
+        document.getElementById(button.getAttribute('aria-controls')).hidden = !active;
       });
-    }, { threshold: 0.6 });
-    els.forEach(function (el) { io.observe(el); });
-  }
-  if (document.readyState !== 'loading') init(); else document.addEventListener('DOMContentLoaded', init);
-})();
-
-// Logo-Maske: Klick auf das Emblem öffnet es groß in hoher Auflösung
-(function () {
-  function init() {
-    var mark = document.querySelector('.logo img.mark');
-    if (!mark) return;
-    var box = null;
-
-    function open() {
-      if (box) return;
-      box = document.createElement('div');
-      box.className = 'logo-mask';
-      box.innerHTML =
-        '<img src="logos/mikatec-mt-full.png" alt="MikaTec-Logo" class="logo-mask-img">' +
-        '<button class="logo-mask-x" type="button" aria-label="Schließen">&times;</button>';
-      document.body.appendChild(box);
-      document.body.style.overflow = 'hidden';
-      requestAnimationFrame(function () { box.classList.add('an'); });
-      box.addEventListener('click', close);
-      document.addEventListener('keydown', onKey);
+      save('mt-toolkit-view',selected.dataset.toolkitView);
     }
-    function close() {
-      if (!box) return;
-      box.classList.remove('an');
-      document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
-      var b = box; box = null;
-      setTimeout(function () { if (b && b.parentNode) b.parentNode.removeChild(b); }, 220);
-    }
-    function onKey(e) { if (e.key === 'Escape') close(); }
-
-    mark.addEventListener('click', function (e) {
-      e.preventDefault();      // nicht zur Startseite navigieren
-      e.stopPropagation();
-      open();
+    viewButtons.forEach((button,index) => {
+      button.addEventListener('click',() => selectToolkitView(button.dataset.toolkitView));
+      button.addEventListener('keydown',event => {
+        let next;
+        if(event.key === 'ArrowRight') next = (index+1)%viewButtons.length;
+        if(event.key === 'ArrowLeft') next = (index+viewButtons.length-1)%viewButtons.length;
+        if(event.key === 'Home') next = 0;
+        if(event.key === 'End') next = viewButtons.length-1;
+        if(next !== undefined) { event.preventDefault(); viewButtons[next].focus(); viewButtons[next].click(); }
+      });
     });
-  }
-  if (document.readyState !== 'loading') init(); else document.addEventListener('DOMContentLoaded', init);
-})();
-
-// Rechtliches (Impressum/Datenschutz): Footer-Link öffnet Modal statt Seite.
-// Ohne JS / bei fetch-Fehler bleibt der normale Link zur Seite als Fallback.
-(function () {
-  function init() {
-    var links = document.querySelectorAll('footer a[href$="impressum.html"], footer a[href$="datenschutz.html"]');
-    if (!links.length) return;
-    var box = null;
-
-    function close() {
-      if (!box) return;
-      box.classList.remove('an');
-      document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
-      var b = box; box = null;
-      setTimeout(function () { if (b && b.parentNode) b.parentNode.removeChild(b); }, 220);
-    }
-    function onKey(e) { if (e.key === 'Escape') close(); }
-
-    function open(href, label) {
-      var clean = String(href).replace(/#mt=(light|dark)$/i, '');
-      box = document.createElement('div');
-      box.className = 'legal-modal';
-      box.innerHTML =
-        '<div class="legal-modal-box" role="dialog" aria-modal="true">' +
-          '<button class="legal-modal-x" type="button" aria-label="Schließen">&times;</button>' +
-          '<iframe class="legal-modal-frame" title="' + (label || 'Rechtliches') + '" src="' + clean + (document.documentElement.getAttribute('data-theme') === 'dark' ? '#mt=dark' : '#mt=light') + '"></iframe>' +
-        '</div>';
-      document.body.appendChild(box);
-      // Thema des Iframes an die Seite angleichen (sonst falsche Farben im Dunkelmodus)
-      var frame = box.querySelector('.legal-modal-frame');
-      function syncTheme() {
-        try {
-          var doc = frame.contentDocument;
-          if (!doc) return;
-          if (document.documentElement.getAttribute('data-theme') === 'dark')
-            doc.documentElement.setAttribute('data-theme', 'dark');
-          else
-            doc.documentElement.removeAttribute('data-theme');
-        } catch (e) {}
+    $$('.toolkit-view',toolkit).forEach(view => {
+      const buttons = $$('[data-toolkit-category]',view);
+      const select = $('[data-toolkit-select]',view);
+      const key = 'mt-'+view.id;
+      function chooseCategory(id) {
+        const selected = buttons.find(button => button.dataset.toolkitCategory === id) || buttons[0];
+        buttons.forEach(button => {
+          const active = button === selected;
+          button.setAttribute('aria-pressed',String(active));
+          document.getElementById(button.getAttribute('aria-controls')).hidden = !active;
+        });
+        select.value = selected.dataset.toolkitCategory;
+        save(key,select.value);
       }
-      frame.addEventListener('load', syncTheme);
-      syncTheme();
-      document.body.style.overflow = 'hidden';
-      requestAnimationFrame(function () { box.classList.add('an'); });
-      box.addEventListener('click', function (e) {
-        if (e.target === box || e.target.closest('.legal-modal-x')) close();
-      });
-      document.addEventListener('keydown', onKey);
-    }
+      buttons.forEach(button => button.addEventListener('click',() => chooseCategory(button.dataset.toolkitCategory)));
+      select.addEventListener('change',() => chooseCategory(select.value));
+      chooseCategory(read(key));
+    });
+    selectToolkitView(read('mt-toolkit-view'));
+  }
 
-    links.forEach(function (a) {
-      a.addEventListener('click', function (e) {
-        e.preventDefault();
-        open(a.getAttribute('href'), a.textContent);
-      });
+  // Vollständige Projektübersicht mit durchsuchbaren Detailinhalten.
+  const projectCards = $$('[data-project-card]');
+  if(projectCards.length) {
+    const search = $('#project-search'), group = $('#project-group'), pages = $('#project-pagination');
+    const params = new URLSearchParams(location.search || read('mt-project-query') || '');
+    search.value = params.get('suche') || ''; group.value = params.get('bereich') || '';
+    let number = Math.max(1,Number(params.get('seite')) || 1);
+    const size = 6;
+    const data = new Map($$('#projDaten article').map(article => [article.dataset.proj,article.textContent]));
+    function render(scroll = false) {
+      const words = normalize(search.value.trim()).split(/\s+/).filter(Boolean);
+      const found = projectCards.filter(card => (!group.value || group.value === card.dataset.group) && words.every(word => normalize(card.textContent+' '+(data.get(card.dataset.projectCard)||'')).includes(word)));
+      const total = Math.max(1,Math.ceil(found.length/size));
+      number = Math.min(number,total);
+      projectCards.forEach(card => { card.hidden = true; });
+      found.slice((number-1)*size,number*size).forEach(card => { card.hidden = false; });
+      $('#project-count').textContent = `${found.length} ${found.length===1?'Projekt':'Projekte'}${found.length ? ` · Seite ${number} von ${total}` : ''}`;
+      $('#project-empty').hidden = found.length > 0;
+      pages.replaceChildren();
+      for(let index=1;index<=total && total>1;index++) {
+        const button = document.createElement('button'); button.type='button'; button.textContent=String(index); button.setAttribute('aria-label',`Projektseite ${index}`);
+        if(index===number) button.setAttribute('aria-current','page');
+        button.addEventListener('click', () => { number=index; render(true); const current=$('[aria-current]',pages); if(current)current.focus({preventScroll:true}); }); pages.append(button);
+      }
+      const state = new URLSearchParams();
+      if(search.value) state.set('suche',search.value);
+      if(group.value) state.set('bereich',group.value);
+      if(number>1) state.set('seite',number);
+      if(!storageWorks) state.set('mt',root.dataset.theme);
+      const query = state.toString() ? '?'+state.toString() : '';
+      history.replaceState(null,'',location.pathname+query);
+      save('mt-project-query',query);
+      if(scroll) window.scrollTo({top:0,behavior:'instant'});
+    }
+    search.addEventListener('input', () => { number=1;render(); });
+    group.addEventListener('change', () => { number=1;render(); });
+    $('#project-reset').addEventListener('click', () => { search.value='';group.value='';number=1;render();search.focus(); });
+    projectCards.forEach(card => card.addEventListener('click', () => { save('mt-project-scroll',String(window.scrollY)); }));
+    render();
+    if(document.referrer.includes('/projekt.html')) requestAnimationFrame(() => { window.scrollTo({top:Number(read('mt-project-scroll'))||0,behavior:'instant'}); });
+  }
+
+  function setupDialog(dialog) {
+    $$('[data-close]',dialog).forEach(button => button.addEventListener('click', () => dialog.close()));
+    dialog.addEventListener('click', event => {
+      if(event.target!==dialog) return;
+      const rect=dialog.getBoundingClientRect();
+      if(event.clientX<rect.left || event.clientX>rect.right || event.clientY<rect.top || event.clientY>rect.bottom) dialog.close();
     });
   }
-  if (document.readyState !== 'loading') init(); else document.addEventListener('DOMContentLoaded', init);
+  $$('dialog').forEach(setupDialog);
+
+  // Ein vollständiges Projekt auf seiner eigenen Detailseite.
+  if(pageName==='Projekt') {
+    const id=new URLSearchParams(location.search).get('id');
+    const article=$$('#projDaten article').find(entry => entry.dataset.proj===id);
+    $('#back-projects').href='projekte.html'+(read('mt-project-query')||'');
+    if(!article) { $('#project-detail').hidden=true; $('#project-not-found').hidden=false; }
+    else {
+      const ds=article.dataset;
+      const title=$('h3',article).textContent;
+      document.title=title+' · MikaTec';
+      $('#detail-title').textContent=title; $('#detail-sub').textContent=ds.sub; $('#detail-status').textContent=ds.status;
+      $('#detail-icon').src=ds.icon;
+      $('#detail-description').textContent=$('p',article).textContent;
+      $('#detail-points').replaceChildren(...$$('.pd-punkte li',article).map(item=>item.cloneNode(true)));
+      const tech=$$('.pd-technik li',article);
+      $('#detail-tech-title').hidden=!tech.length;
+      tech.forEach(item=>{const span=document.createElement('span');span.className='tech';span.textContent=item.textContent;$('#detail-tech').append(span);});
+      if(ds.live) {const link=$('#detail-live');link.hidden=false;link.href=ds.live;const external=/^https?:/.test(ds.live);link.textContent=external?'Webseite öffnen ↗':'Ausführliche Projektbeschreibung →';if(external){link.target='_blank';link.rel='noopener';}}
+      let index=0;
+      const parse = value => value ? JSON.parse(value) : [];
+      const captions=parse(ds.caps);
+      const images=()=>root.dataset.theme==='dark' ? parse(ds.bilderDunkel || ds.bilderLight).concat(ds.bilderDunkel || ds.bilderLight ? [] : [ds.bildDark || ds.bild || ds.bildLight].filter(Boolean)) : parse(ds.bilderLight || ds.bilderDunkel).concat(ds.bilderLight || ds.bilderDunkel ? [] : [ds.bildLight || ds.bild || ds.bildDark].filter(Boolean));
+      const dialog=$('#project-image-dialog');
+      function showImage() {
+        const list=images();index=Math.min(index,Math.max(0,list.length-1));
+        $('#detail-zoom').hidden=!list.length;$('#detail-no-image').hidden=!!list.length;$('.gallery-controls').hidden=!list.length;
+        if(!list.length)return;
+        const caption=title+(captions[index]?' · '+captions[index]:'');
+        $('#detail-image').src=list[index];$('#detail-image').alt=caption;
+        $('#gallery-caption').textContent=`${index+1} / ${list.length}${captions[index]?' · '+captions[index]:''}`;
+        $('#gallery-prev').disabled=index===0;$('#gallery-next').disabled=index===list.length-1;
+        if(dialog.open){$('#project-large-image').src=list[index];$('#project-large-image').alt=caption;$('#project-large-caption').textContent=caption;}
+      }
+      $('#gallery-prev').addEventListener('click',()=>{index--;showImage();});
+      $('#gallery-next').addEventListener('click',()=>{index++;showImage();});
+      $('#detail-zoom').addEventListener('click',()=>{const img=$('#detail-image');$('#project-large-image').src=img.src;$('#project-large-image').alt=img.alt;$('#project-large-caption').textContent=img.alt;dialog.showModal();});
+      dialog.addEventListener('keydown',event=>{const list=images();if(event.key==='ArrowLeft'&&index>0){event.preventDefault();index--;showImage();}if(event.key==='ArrowRight'&&index<list.length-1){event.preventDefault();index++;showImage();}});
+      document.addEventListener('themechange',showImage);showImage();
+    }
+  }
+
+  // Vorhandene ausführliche Fallstudien behalten sämtliche Bilder, kompakt als Galerie.
+  if(pageName==='AKA-Haus' || pageName==='AKA-Recht') {
+    const shots=$$('#panel-einblick .shot');
+    if(shots.length) {
+      let selected=0;const parent=shots[0].parentElement;
+      parent.style.display='block';
+      const controls=document.createElement('div');controls.className='gallery-controls';
+      const prev=document.createElement('button'),next=document.createElement('button'),caption=document.createElement('span');
+      prev.type=next.type='button';prev.textContent='←';next.textContent='→';prev.setAttribute('aria-label','Vorheriges Bild');next.setAttribute('aria-label','Nächstes Bild');
+      controls.append(prev,caption,next);parent.after(controls);
+      function render(){shots.forEach((shot,index)=>{shot.hidden=index!==selected;});caption.textContent=`${selected+1} / ${shots.length} · ${$('.t',shots[selected]).textContent}`;prev.disabled=selected===0;next.disabled=selected===shots.length-1;}
+      prev.addEventListener('click',()=>{selected--;render();});next.addEventListener('click',()=>{selected++;render();});render();
+      const dialog=document.createElement('dialog');dialog.className='image-dialog';dialog.setAttribute('aria-label','Projektbild vergrößert');
+      const close=document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','Bildansicht schließen');close.dataset.close='';
+      const large=document.createElement('img');large.alt='';dialog.append(close,large);document.body.append(dialog);setupDialog(dialog);
+      shots.forEach(shot=>{const img=$('img',shot);img.style.maxHeight='400px';img.style.objectFit='contain';const button=document.createElement('button');button.className='detail-image-button';button.type='button';button.setAttribute('aria-label',img.alt+' vergrößern');img.replaceWith(button);button.append(img);button.addEventListener('click',()=>{large.src=img.src;large.alt=img.alt;dialog.showModal();});});
+      document.addEventListener('themechange',()=>{if(dialog.open){const img=$('img',shots[selected]);large.src=img.src;large.alt=img.alt;}});
+    }
+  }
+
+  // Nativer POST an den vorhandenen Versanddienst, auch ohne JavaScript nutzbar.
+  const form=$('[data-contact-form]');
+  if(form) {
+    const inquiryType=$('#f-art',form);
+    const requestedType=new URLSearchParams(location.search).get('anliegen');
+    const requestedOption=[...inquiryType.options].find(option=>option.dataset.inquiry===requestedType);
+    if(requestedOption) inquiryType.value=requestedOption.value;
+    const submit=$('button[type="submit"]',form),submitLabel=$('[data-submit-label]',form);
+    const feedback=$('.form-feedback',form);
+    let submitting=false;
+    const resetSubmission=()=>{
+      submitting=false;submit.disabled=false;submitLabel.textContent='Anfrage senden';
+      form.removeAttribute('aria-busy');
+      if(feedback.dataset.state==='pending'){feedback.hidden=true;feedback.textContent='';}
+    };
+    ['#f-name','#f-msg'].forEach(selector=>{
+      const field=$(selector,form);
+      field.addEventListener('input',()=>field.setCustomValidity(''));
+    });
+    form.addEventListener('submit',event=>{
+      if(submitting){event.preventDefault();return;}
+      ['#f-name','#f-email','#f-phone','#f-msg'].forEach(selector=>{
+        const field=$(selector,form);field.value=field.value.trim();
+      });
+      $('#f-name',form).setCustomValidity($('#f-name',form).value?'':'Bitte geben Sie Ihren Namen ein.');
+      $('#f-msg',form).setCustomValidity($('#f-msg',form).value?'':'Bitte schreiben Sie eine Nachricht.');
+      if(!form.reportValidity()){event.preventDefault();return;}
+      const next=new URL('https://mika-tec.com/kontakt.html?versand=angenommen#anfrage');
+      next.searchParams.set('mt',root.dataset.theme);
+      $('[name="_next"]',form).value=next.href;
+      $('[name="_subject"]',form).value='MikaTec: '+inquiryType.selectedOptions[0].textContent.trim();
+      submitting=true;submit.disabled=true;submitLabel.textContent='Weiter zum Versand …';
+      form.setAttribute('aria-busy','true');
+      feedback.dataset.state='pending';feedback.textContent='Die Anfrage wird an FormSubmit übergeben. Bitte schließen Sie dort gegebenenfalls die Sicherheitsprüfung ab.';feedback.hidden=false;
+    });
+    // Beim Zurückkehren mit der Browser-Zurück-Taste erneut senden ermöglichen.
+    window.addEventListener('pageshow',resetSubmission);
+    if(new URLSearchParams(location.search).get('versand')==='angenommen') {
+      feedback.dataset.state='accepted';
+      feedback.textContent='Vielen Dank für Ihre Anfrage. Der Versanddienst hat sie angenommen. Ich melde mich persönlich bei Ihnen.';
+      feedback.hidden=false;
+      $('#tab-anfrage').click();
+      feedback.focus({preventScroll:true});feedback.scrollIntoView({block:'nearest'});
+      const clean=new URL(location.href);clean.searchParams.delete('versand');
+      history.replaceState(null,'',clean);
+    }
+  }
+
+  const categories=$$('[data-category]');
+  if(categories.length) {
+    const dialog=$('#category-dialog'),search=$('#category-search');
+    categories.forEach(card=>card.addEventListener('click',()=>{const title=$('h3',card).cloneNode(true);$$('br',title).forEach(br=>br.replaceWith(' '));$('#category-dialog-title').textContent=title.textContent;$('#category-content').replaceChildren($('#category-'+card.dataset.category).content.cloneNode(true));dialog.showModal();}));
+    function filter(){const words=normalize(search.value.trim()).split(/\s+/).filter(Boolean);let count=0;categories.forEach(card=>{const visible=words.every(word=>normalize(card.textContent+' '+card.dataset.tags).includes(word));card.hidden=!visible;if(visible)count++;});$('#search-count').textContent=`${count} ${count===1?'Bereich':'Bereiche'}`;$('#empty-state').hidden=count>0;}
+    search.addEventListener('input',filter);$('#reset-search').addEventListener('click',()=>{search.value='';filter();search.focus();});
+  }
+  // Bestehende Reichweitenmessung nur auf der veröffentlichten Domain laden.
+  if (['mika-tec.com','www.mika-tec.com'].includes(location.hostname)) {
+    const analytics=document.createElement('script');
+    analytics.dataset.goatcounter='https://mikatec.goatcounter.com/count';
+    analytics.src='https://gc.zgo.at/count.js';
+    analytics.async=true;
+    document.body.append(analytics);
+  }
 })();

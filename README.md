@@ -36,7 +36,9 @@ Genau das deckt AKA Haus ab. Es ersetzt die Pflegesoftware nicht, es arbeitet da
 | **Haustechnik und Wartung** | Defekte melden, Schlüssel und Geräte, Prüfungen und Schulungen mit Erinnerung |
 | **Qualität** | Dokumente, Beschwerden und Ideen, Formulare |
 | **Miteinander** | Chat, Kalender, Übergabe, Schwarzes Brett, Telefonbuch, Ess-Karten |
-| **Leitung** | Auswertung, Rollen und Rechte nach Bereich, Funktion und Dienst |
+| **Leitung** | Auswertung, Rollen und Rechte nach Bereich, Funktion und Dienst, persönliche Anmeldung mit eigenem Namen; private Angaben der Mitarbeiter sieht nur, wer das Personal verwaltet |
+| **Briefkopf und Signatur** | Logo und Angaben des Hauses nach DIN 5008, zwei Muster zur Wahl, Kopf und Fußzeile auf jedem PDF, Gruß der Person, die schreibt, Signatur zum Kopieren |
+| **Start eines Hauses** | Mitarbeiterlisten aus Excel, CSV oder PDF übernehmen: auf dem Gerät gelesen, ohne Internet und ohne KI, mit Vorschau und Bestätigung; jede Person ersetzt das Start-Passwort bei der ersten Anmeldung |
 
 Jedes Heim kann einzelne Bereiche abschalten.
 
@@ -47,6 +49,7 @@ Jedes Heim kann einzelne Bereiche abschalten.
 | ![Betreuung: Angebote](bilder/02-betreuung-hell.jpg) **Betreuung:** Angebote nach Art, Dauer und Eignung | ![Schreiben an Ärzte](bilder/03-schreiben-hell.jpg) **Schreiben an Ärzte:** offen, verschickt, festgeschrieben |
 | ![Ess-Karten](bilder/04-ess-karten-hell.jpg) **Ess-Karten:** eine Tischkarte je Bewohner und Mahlzeit | ![Rollen und Rechte](bilder/05-rechte-hell.jpg) **Rollen und Rechte:** wer was sehen und ändern darf |
 | ![Auswertung](bilder/06-auswertung-hell.jpg) **Auswertung:** Zahlen und Suche über alle Vorgänge | ![Überblick, dunkle Darstellung](bilder/01-ueberblick-dunkel.jpg) **Hell und dunkel:** jede Ansicht in beiden Darstellungen |
+| ![Briefkopf und Signatur](bilder/07-briefkopf-hell.jpg) **Briefkopf und Signatur:** einmal eingetragen, auf jedem Schreiben | ![Daten-Import](bilder/08-import-hell.jpg) **Start eines Hauses:** Mitarbeiter aus einer Liste anlegen, mit Vorschau |
 
 ## Die Daten bleiben im Haus
 
@@ -56,6 +59,7 @@ Es geht um Gesundheitsdaten. Deshalb gilt für AKA Haus: Sicherheit vor Funktion
 - **Keine fremden Dienste.** Keine Daten von Bewohnern oder Mitarbeitern gehen an Dritte, auch nicht für Rechtschreibprüfung, Übersetzung oder KI.
 - **Verschlüsselt, auch im Haus.** Die Verbindung zwischen Gerät und Server ist verschlüsselt, Sicherungen ebenfalls.
 - **Rechte prüft der Server.** Anmeldung und Berechtigungen werden auf dem Server geprüft, nicht nur in der Oberfläche.
+- **Unabhängig geprüft.** Der Code wird regelmäßig unabhängig geprüft; gefundene Schwachstellen werden vor dem Echtbetrieb behoben.
 - **Einziger Weg nach außen:** Schreiben an Arztpraxen per Mail oder Fax, über den Mailserver des Heims, und abschaltbar.
 
 AKA Haus ist kein Medizinprodukt. Es rechnet keine Dosierungen und bewertet keine Risiken.
@@ -66,12 +70,14 @@ Eine Anwendung für alle Geräte im Haus: im Browser am PC und als App auf dem i
 
 ## Stand
 
-AKA Haus ist in Entwicklung und arbeitet bisher ausschließlich mit Übungsdaten. Es ist noch nicht im Echtbetrieb.
+AKA Haus ist in Entwicklung und noch nicht im Echtbetrieb. Alle Bilder und die Vorführung zeigen erfundene Daten.
 
 | Schritt | Stand |
 | --- | --- |
 | Bereiche und Oberfläche, hell und dunkel | gebaut |
 | Server im Heim: Anmeldung, Rechte, Echtzeit, verschlüsselte Sicherungen | gebaut, letzte Teile in Arbeit |
+| Briefkopf und Signatur | gebaut |
+| Start eines Hauses: Mitarbeiter aus Listen übernehmen | gebaut; Bewohner, Ärzte und Kontakte geplant |
 | Betreuung weiter ausbauen | geplant |
 | Datenschutz-Unterlagen und Installationspaket | geplant |
 | Pilotbetrieb in einem Haus | geplant |
@@ -95,6 +101,6 @@ Gesucht sind auch Rückmeldungen aus der Praxis: Was fehlt im Alltag eines Heims
 
 **AKA Haus** is an organisation and communication app for nursing homes. It runs alongside any nursing documentation software and covers what usually stays on paper: activity planning, letters to doctors, logs, maintenance, quality documents, tasks, chat, calendar and handover. It runs only inside the home's own network, on a small server in the building. No cloud, no third-party services.
 
-This repository is a showcase without source code. The product is in development and currently works with practice data only. For a demonstration, contact [info@mika-tec.com](mailto:info@mika-tec.com).
+This repository is a showcase without source code. The product is in development and not yet in production use; screenshots and demonstrations use invented data. For a demonstration, contact [info@mika-tec.com](mailto:info@mika-tec.com).
 
 </details>
