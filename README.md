@@ -38,7 +38,9 @@ Genau das deckt AKA Haus ab. Es ersetzt die Pflegesoftware nicht, es arbeitet da
 | **Miteinander** | Chat, Kalender, Übergabe, Schwarzes Brett, Telefonbuch, Ess-Karten |
 | **Leitung** | Auswertung, Rollen und Rechte nach Bereich, Funktion und Dienst, persönliche Anmeldung mit eigenem Namen; private Angaben der Mitarbeiter sieht nur, wer das Personal verwaltet |
 | **Briefkopf und Signatur** | Logo und Angaben des Hauses nach DIN 5008, zwei Muster zur Wahl, Kopf und Fußzeile auf jedem PDF, Gruß der Person, die schreibt, Signatur zum Kopieren |
-| **Start eines Hauses** | Mitarbeiterlisten aus Excel, CSV oder PDF übernehmen: auf dem Gerät gelesen, ohne Internet und ohne KI, mit Vorschau und Bestätigung; jede Person ersetzt das Start-Passwort bei der ersten Anmeldung |
+| **Start eines Hauses** | Mitarbeiterlisten aus Excel, CSV oder PDF übernehmen, Bewohner, Ärzte und Kontakte aus Excel oder CSV: auf dem Gerät gelesen, ohne Internet und ohne KI, mit Vorschau und Bestätigung; jede Person ersetzt das Start-Passwort bei der ersten Anmeldung |
+| **Mitarbeitervertretung** | Eigener Bereich der MAV: Anliegen namentlich oder anonym, anonyme schon auf dem Gerät verschlüsselt (lesen können sie nur Vorsitz und Stellvertretung, auch nicht die IT), Aushänge, Sprechzeiten, Umfragen nur mit Zählungen |
+| **Küche und Menüwahl** | Speiseplan je Woche mit bis zu drei Menüs und Allergenen, Wahl je Bewohner mit Bestellschluss, Mengen für die Küche, Wochenkarte auf Papier |
 
 Jedes Heim kann einzelne Bereiche abschalten.
 
@@ -59,6 +61,8 @@ Es geht um Gesundheitsdaten. Deshalb gilt für AKA Haus: Sicherheit vor Funktion
 - **Keine fremden Dienste.** Keine Daten von Bewohnern oder Mitarbeitern gehen an Dritte, auch nicht für Rechtschreibprüfung, Übersetzung oder KI.
 - **Verschlüsselt, auch im Haus.** Die Verbindung zwischen Gerät und Server ist verschlüsselt, Sicherungen ebenfalls.
 - **Rechte prüft der Server.** Anmeldung und Berechtigungen werden auf dem Server geprüft, nicht nur in der Oberfläche.
+- **Anonym heißt verschlüsselt.** Anonyme Anliegen an die Mitarbeitervertretung sind Ende-zu-Ende verschlüsselt.
+- **Fristen.** Aufbewahrungsfristen stellt jedes Haus selbst ein; Abgelaufenes löscht der Server selbst oder legt es der Leitung zur Bestätigung vor.
 - **Unabhängig geprüft.** Der Code wird regelmäßig unabhängig geprüft; gefundene Schwachstellen werden vor dem Echtbetrieb behoben.
 - **Einziger Weg nach außen:** Schreiben an Arztpraxen per Mail oder Fax, über den Mailserver des Heims, und abschaltbar.
 
@@ -66,7 +70,7 @@ AKA Haus ist kein Medizinprodukt. Es rechnet keine Dosierungen und bewertet kein
 
 ## Auf welchen Geräten
 
-Eine Anwendung für alle Geräte im Haus: im Browser am PC und als App auf dem iPad. Ein eigenes Programm für macOS und Windows ist in Arbeit.
+Eine Anwendung für alle Geräte im Haus: im Browser am PC und auf dem iPad, dort als Web-App auf dem Home-Bildschirm. Ein eigenes Programm für den Mac wird erprobt; Windows folgt.
 
 ## Stand
 
@@ -75,11 +79,14 @@ AKA Haus ist in Entwicklung und noch nicht im Echtbetrieb. Alle Bilder und die V
 | Schritt | Stand |
 | --- | --- |
 | Bereiche und Oberfläche, hell und dunkel | gebaut |
-| Server im Heim: Anmeldung, Rechte, Echtzeit, verschlüsselte Sicherungen | gebaut, letzte Teile in Arbeit |
+| Server im Heim: Anmeldung, Rechte, Echtzeit, verschlüsselte Sicherungen, verschlüsselte Verbindung im Hausnetz | gebaut |
 | Briefkopf und Signatur | gebaut |
-| Start eines Hauses: Mitarbeiter aus Listen übernehmen | gebaut; Bewohner, Ärzte und Kontakte geplant |
+| Start eines Hauses: Mitarbeiter, Bewohner, Ärzte und Kontakte aus Listen | gebaut |
+| Küche und Menüwahl; Mitarbeitervertretung mit verschlüsselten anonymen Anliegen | gebaut |
+| Aufbewahrungsfristen (Löschkonzept) | gebaut |
+| Installationsanleitung und Server-Paket für den Mac | gebaut; Windows und Linux folgen |
+| Datenschutz-Unterlagen | in Arbeit |
 | Betreuung weiter ausbauen | geplant |
-| Datenschutz-Unterlagen und Installationspaket | geplant |
 | Pilotbetrieb in einem Haus | geplant |
 
 ## Interesse?
@@ -99,7 +106,7 @@ Gesucht sind auch Rückmeldungen aus der Praxis: Was fehlt im Alltag eines Heims
 
 <br>
 
-**AKA Haus** is an organisation and communication app for nursing homes. It runs alongside any nursing documentation software and covers what usually stays on paper: activity planning, letters to doctors, logs, maintenance, quality documents, tasks, chat, calendar and handover. It runs only inside the home's own network, on a small server in the building. No cloud, no third-party services.
+**AKA Haus** is an organisation and communication app for nursing homes. It runs alongside any nursing documentation software and covers what usually stays on paper: activity planning, letters to doctors, logs, maintenance, quality documents, tasks, chat, calendar, handover, menu choice and a staff council area with end-to-end encrypted anonymous concerns. It runs only inside the home's own network, on a small server in the building. No cloud, no third-party services.
 
 This repository is a showcase without source code. The product is in development and not yet in production use; screenshots and demonstrations use invented data. For a demonstration, contact [info@mika-tec.com](mailto:info@mika-tec.com).
 
