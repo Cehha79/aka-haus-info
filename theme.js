@@ -164,43 +164,38 @@
     selectToolkitView(read('mt-toolkit-view'));
   }
 
-  // Vollständige Projektübersicht mit durchsuchbaren Detailinhalten.
+  // Projektübersicht in Reihen zu je drei Spalten; die Suche wirkt über alle Reihen.
   const projectCards = $$('[data-project-card]');
   if(projectCards.length) {
-    const search = $('#project-search'), group = $('#project-group'), pages = $('#project-pagination');
+    const search = $('#project-search'), rows = $$('.project-row');
     const params = new URLSearchParams(location.search || read('mt-project-query') || '');
-    search.value = params.get('suche') || ''; group.value = params.get('bereich') || '';
-    let number = Math.max(1,Number(params.get('seite')) || 1);
-    const size = 6;
+    search.value = params.get('suche') || '';
     const data = new Map($$('#projDaten article').map(article => [article.dataset.proj,article.textContent]));
-    function render(scroll = false) {
+    function render() {
       const words = normalize(search.value.trim()).split(/\s+/).filter(Boolean);
-      const found = projectCards.filter(card => (!group.value || group.value === card.dataset.group) && words.every(word => normalize(card.textContent+' '+(data.get(card.dataset.projectCard)||'')).includes(word)));
-      const total = Math.max(1,Math.ceil(found.length/size));
-      number = Math.min(number,total);
-      projectCards.forEach(card => { card.hidden = true; });
-      found.slice((number-1)*size,number*size).forEach(card => { card.hidden = false; });
-      $('#project-count').textContent = `${found.length} ${found.length===1?'Projekt':'Projekte'}${found.length ? ` · Seite ${number} von ${total}` : ''}`;
-      $('#project-empty').hidden = found.length > 0;
-      pages.replaceChildren();
-      for(let index=1;index<=total && total>1;index++) {
-        const button = document.createElement('button'); button.type='button'; button.textContent=String(index); button.setAttribute('aria-label',`Projektseite ${index}`);
-        if(index===number) button.setAttribute('aria-current','page');
-        button.addEventListener('click', () => { number=index; render(true); const current=$('[aria-current]',pages); if(current)current.focus({preventScroll:true}); }); pages.append(button);
-      }
+      let found = 0;
+      projectCards.forEach(card => {
+        const hit = words.every(word => normalize(card.textContent+' '+(data.get(card.dataset.projectCard)||'')).includes(word));
+        card.hidden = !hit; if(hit) found++;
+      });
+      rows.forEach(row => {
+        const track = $('.project-track',row), empty = $('.row-empty',row);
+        const visible = !!track && $$('[data-project-card]',track).some(card => !card.hidden);
+        if(track) track.hidden = !visible;
+        empty.hidden = visible;
+        empty.textContent = words.length && track ? 'Keine Treffer in dieser Reihe.' : 'Kommt bald.';
+      });
+      $('#project-count').textContent = `${found} ${found===1?'Projekt':'Projekte'}`;
+      $('#project-empty').hidden = found > 0;
       const state = new URLSearchParams();
       if(search.value) state.set('suche',search.value);
-      if(group.value) state.set('bereich',group.value);
-      if(number>1) state.set('seite',number);
       if(!storageWorks) state.set('mt',root.dataset.theme);
       const query = state.toString() ? '?'+state.toString() : '';
       history.replaceState(null,'',location.pathname+query);
       save('mt-project-query',query);
-      if(scroll) window.scrollTo({top:0,behavior:'instant'});
     }
-    search.addEventListener('input', () => { number=1;render(); });
-    group.addEventListener('change', () => { number=1;render(); });
-    $('#project-reset').addEventListener('click', () => { search.value='';group.value='';number=1;render();search.focus(); });
+    search.addEventListener('input', render);
+    $('#project-reset').addEventListener('click', () => { search.value='';render();search.focus(); });
     projectCards.forEach(card => card.addEventListener('click', () => { save('mt-project-scroll',String(window.scrollY)); }));
     render();
     if(document.referrer.includes('/projekt.html')) requestAnimationFrame(() => { window.scrollTo({top:Number(read('mt-project-scroll'))||0,behavior:'instant'}); });
